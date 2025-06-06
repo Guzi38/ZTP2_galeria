@@ -12,6 +12,6 @@ class GalleryControllerTest extends WebTestCase
         $client->request('GET', '/gallery');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'Galerie'); // Upewnij się, że tłumaczenie show_galleries: Galerie istnieje
+        $this->assertSelectorTextContains('h1', 'Galerie');
     }
 }

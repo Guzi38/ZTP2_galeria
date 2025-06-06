@@ -18,7 +18,7 @@ class PhotoControllerTest extends WebTestCase
     public function testPhotoShowRedirectsWhenNotFound(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/photo/99999'); // zakładamy, że zdjęcie o takim ID nie istnieje
+        $client->request('GET', '/photo/99999');
 
         $this->assertResponseStatusCodeSame(404);
     }
