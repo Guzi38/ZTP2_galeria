@@ -43,7 +43,7 @@ class PhotoEditType extends AbstractType
      * @param FormBuilderInterface $builder Form Builder Interface
      * @param array                $options Options
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add(
