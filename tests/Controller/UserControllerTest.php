@@ -3,7 +3,7 @@ namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class UserControllerSmokeTest extends WebTestCase
+final class UserControllerTest extends WebTestCase
 {
     public function testIndexLoadsOrRedirects(): void
     {
