@@ -61,7 +61,6 @@ abstract class AbstractBaseFixtures extends Fixture
         return self::$groupClassMap[$groupName];
     }
 
-
     private function buildReferencesIndex(string $groupName): void
     {
         $class = $this->getGroupClass($groupName);
