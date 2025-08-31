@@ -21,7 +21,6 @@ class UserFixtures extends AbstractBaseFixtures
             return;
         }
 
-        // normal users
         $this->createMany(10, 'users', function (int $i) {
             $user = new User();
             $user->setEmail(sprintf('user%d@example.com', $i));
@@ -33,7 +32,6 @@ class UserFixtures extends AbstractBaseFixtures
             return $user;
         });
 
-        // admins
         $this->createMany(3, 'admins', function (int $i) {
             $user = new User();
             $user->setEmail(sprintf('admin%d@example.com', $i));
