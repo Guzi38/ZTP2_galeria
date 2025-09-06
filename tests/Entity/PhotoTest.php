@@ -1,13 +1,14 @@
 <?php
+
 namespace App\Tests\Entity;
 
+use App\Entity\Comment;
+use App\Entity\Gallery;
 use App\Entity\Photo;
 use App\Entity\Tag;
 use App\Entity\User;
-use App\Entity\Comment;
-use App\Entity\Gallery;
-use PHPUnit\Framework\TestCase;
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\TestCase;
 
 class PhotoTest extends TestCase
 {
@@ -17,17 +18,17 @@ class PhotoTest extends TestCase
 
         $this->assertNull($photo->getId());
 
-     //   $createdAt = new \DateTimeImmutable('2025-08-11 10:00:00');
-     //   $photo->setCreatedAt($createdAt);
-      //  $this->assertSame($createdAt, $photo->getCreatedAt());
+        //   $createdAt = new \DateTimeImmutable('2025-08-11 10:00:00');
+        //   $photo->setCreatedAt($createdAt);
+        //  $this->assertSame($createdAt, $photo->getCreatedAt());
 
-      //  $updatedAt = new \DateTimeImmutable('2025-08-11 12:00:00');
-     //   $photo->setUpdatedAt($updatedAt);
-      //  $this->assertSame($updatedAt, $photo->getUpdatedAt());
+        //  $updatedAt = new \DateTimeImmutable('2025-08-11 12:00:00');
+        //   $photo->setUpdatedAt($updatedAt);
+        //  $this->assertSame($updatedAt, $photo->getUpdatedAt());
 
-     //   $date = new \DateTimeImmutable('2025-08-11 14:00:00');
-     //   $photo->setDate($date);
-     //   $this->assertSame($date, $photo->getDate());
+        //   $date = new \DateTimeImmutable('2025-08-11 14:00:00');
+        //   $photo->setDate($date);
+        //   $this->assertSame($date, $photo->getDate());
 
         $title = 'My Photo';
         $photo->setTitle($title);

@@ -5,10 +5,9 @@
 {% endblock %}
 
 {% block body %}
-
     <h1>{{ 'photos_comments'|trans }}</h1>
-    {% if pagination is defined and pagination.items|length %}
 
+    {% if pagination is defined and pagination.items|length %}
         <div class="navigation text-center">
             {{ knp_pagination_render(pagination) }}
         </div>
@@ -32,17 +31,17 @@
                     <td>{{ comment.content }}</td>
                     <td>
                         {% if is_granted('VIEW', comment) %}
-                            <a href="{{ url('comment_show', {id: comment.id}) }}" title="{{ 'action.show'|trans }}" class="btn">
+                            <a href="{{ url('comment_show', {id: comment.id}) }}" class="btn">
                                 {{ 'show_me'|trans }}
                             </a>
                         {% endif %}
                         {% if is_granted('EDIT', comment) %}
-                            <a href="{{ url('comment_edit', {id: comment.id}) }}" title="{{ 'action.edit'|trans }}" class="btn">
+                            <a href="{{ url('comment_edit', {id: comment.id}) }}" class="btn btn-warning">
                                 {{ 'do_edit'|trans }}
                             </a>
                         {% endif %}
                         {% if is_granted('DELETE', comment) %}
-                            <a href="{{ url('comment_delete', {id: comment.id}) }}" title="{{ 'action.delete'|trans }}" class="btn">
+                            <a href="{{ url('comment_delete', {id: comment.id}) }}" class="btn btn-danger">
                                 {{ 'do_delete'|trans }}
                             </a>
                         {% endif %}
@@ -55,10 +54,7 @@
         <div class="navigation text-center">
             {{ knp_pagination_render(pagination) }}
         </div>
-
     {% else %}
-        <p>
-            {{ 'message.empty_list'|trans }}
-        </p>
+        <p>{{ 'message.empty_list'|trans }}</p>
     {% endif %}
 {% endblock %}

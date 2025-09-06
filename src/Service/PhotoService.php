@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Photo service.
  */
@@ -178,7 +179,7 @@ class PhotoService implements PhotoServiceInterface
         if (null !== $uploadedFile) {
             if (null !== $filename) {
                 $this->filesystem->remove(
-                    $this->targetDirectory.'/'.$filename
+                    $this->targetDirectory . '/' . $filename
                 );
             }
 

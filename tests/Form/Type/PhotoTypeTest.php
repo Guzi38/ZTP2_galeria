@@ -3,8 +3,8 @@
 namespace App\Tests\Form\Type;
 
 use App\Entity\Photo;
-use App\Form\Type\PhotoType;
 use App\Form\DataTransformer\TagsDataTransformer;
+use App\Form\Type\PhotoType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Form\FormFactoryInterface;
 

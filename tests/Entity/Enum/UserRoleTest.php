@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Tests\Entity\Enum;
 
 use App\Entity\Enum\UserRole;
@@ -32,5 +33,3 @@ final class UserRoleTest extends TestCase
         $this->assertSame('role_admin', UserRole::ROLE_ADMIN->label());
     }
 }
-
-

@@ -4,6 +4,11 @@ twig:
     globals:
         photos_directory: 'uploads/photos/'
 
+    date:
+        format: 'd MMMM yyyy'       # np. 2 lipca 2025
+        interval_format: '%%d dni'
+        timezone: 'Europe/Warsaw'
+
 when@test:
     twig:
         strict_variables: true

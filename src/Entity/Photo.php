@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Photo entity.
  */
@@ -109,7 +110,6 @@ class Photo
     /**
      * Gallery.
      *
-     * @var Gallery
      **/
     #[ORM\ManyToOne(targetEntity: Gallery::class)]
     #[Assert\NotBlank]

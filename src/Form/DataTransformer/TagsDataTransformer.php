@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Tags data transformer.
  */
@@ -68,7 +69,7 @@ class TagsDataTransformer implements DataTransformerInterface
 
         foreach ($tagTitles as $tagTitle) {
             $normalized = strtolower(trim($tagTitle));
-            if ($normalized === '') {
+            if ('' === $normalized) {
                 continue;
             }
 
@@ -84,5 +85,4 @@ class TagsDataTransformer implements DataTransformerInterface
 
         return $tags;
     }
-
 }

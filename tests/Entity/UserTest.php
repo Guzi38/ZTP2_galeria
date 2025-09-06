@@ -1,11 +1,11 @@
 <?php
+
 namespace App\Tests\Entity;
 
-use App\Entity\User;
 use App\Entity\Enum\UserRole;
-use App\Entity\Comment;
-use PHPUnit\Framework\TestCase;
+use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Framework\TestCase;
 
 class UserTest extends TestCase
 {

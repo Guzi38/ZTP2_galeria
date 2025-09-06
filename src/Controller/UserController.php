@@ -1,4 +1,5 @@
 <?php
+
 /**
  * User controller.
  */
@@ -64,7 +65,7 @@ class UserController extends AbstractController
     /**
      * Show action.
      *
-     * @param user $user user
+     * @param User $user user
      *
      * @return Response HTTP response
      */
@@ -75,7 +76,7 @@ class UserController extends AbstractController
         methods: 'GET'
     )]
     #[IsGranted('MANAGE')]
-    public function show(user $user): Response
+    public function show(User $user): Response
     {
         return $this->render('user/show.html.twig', ['user' => $user]);
     }

@@ -48,11 +48,11 @@ class PhotoEditTypeTest extends TestCase
         $builder->expects($this->atLeast(1))
             ->method('add')
             ->withConsecutive(
-                ['title', TextType::class, $this->callback(fn($o) => isset($o['label']) && isset($o['required']))],
-                ['content', TextType::class, $this->callback(fn($o) => isset($o['label']) && isset($o['required']))],
-                ['gallery', EntityType::class, $this->callback(fn($o) => isset($o['class']) && isset($o['choice_label']))],
-                ['tags', TextType::class, $this->callback(fn($o) => array_key_exists('required', $o))],
-                ['file', FileType::class, $this->callback(fn($o) => array_key_exists('mapped', $o))]
+                ['title', TextType::class, $this->callback(fn ($o) => isset($o['label']) && isset($o['required']))],
+                ['content', TextType::class, $this->callback(fn ($o) => isset($o['label']) && isset($o['required']))],
+                ['gallery', EntityType::class, $this->callback(fn ($o) => isset($o['class']) && isset($o['choice_label']))],
+                ['tags', TextType::class, $this->callback(fn ($o) => array_key_exists('required', $o))],
+                ['file', FileType::class, $this->callback(fn ($o) => array_key_exists('mapped', $o))]
             );
 
         $type->buildForm($builder, []);

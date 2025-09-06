@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Tag controller.
  */
@@ -87,7 +88,7 @@ class TagController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route('/create', name: 'tag_create', methods: 'GET|POST', )]
+    #[Route('/create', name: 'tag_create', methods: 'GET|POST',)]
     public function create(Request $request): Response
     {
         $tag = new Tag();

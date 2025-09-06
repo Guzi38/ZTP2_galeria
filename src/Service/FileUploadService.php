@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File upload service.
  */
@@ -51,7 +52,7 @@ class FileUploadService implements FileUploadServiceInterface
         if (null !== $extension) {
             $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $safeFilename = $this->slugger->slug($originalFilename);
-            $fileName = $safeFilename.'-'.uniqid().'.'.$extension;
+            $fileName = $safeFilename . '-' . uniqid() . '.' . $extension;
         }
 
         try {

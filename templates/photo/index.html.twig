@@ -31,7 +31,7 @@
             {% for photo in pagination.items %}
                 <tr>
                     <td>{{ photo.id }}</td>
-                    <td>{{ photo.createdAt|date('d/m/Y') }}</td>
+                    <td>{{ photo.createdAt|format_date('long') }}</td>
                     <td>{{ photo.title }}</td>
                     <td>
                         <a href="{{ url('photo_index', {'filters.gallery_id' : photo.gallery.id}) }}" title="{{ photo.gallery.title }}">
@@ -53,7 +53,7 @@
                         <a href="{{ url('photo_show', {id: photo.id}) }}" title="{{ 'action.view'|trans }}" class="btn">
                             {{ 'show_me'|trans }}
                         </a>
-                        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        {% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ url('photo_edit', {id: photo.id}) }}" title="{{ 'action.edit'|trans }}" class="btn">
                                 {{ 'do_edit'|trans }}
                             </a>

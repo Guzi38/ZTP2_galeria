@@ -24,8 +24,10 @@ class TagsDataTransformerTest extends TestCase
         $tagService = $this->createMock(TagServiceInterface::class);
         $transformer = new TagsDataTransformer($tagService);
 
-        $t1 = new Tag(); $t1->setTitle('Nature');
-        $t2 = new Tag(); $t2->setTitle('Portrait');
+        $t1 = new Tag();
+        $t1->setTitle('Nature');
+        $t2 = new Tag();
+        $t2->setTitle('Portrait');
 
         $out = $transformer->transform(new ArrayCollection([$t1, $t2]));
         $this->assertSame('Nature, Portrait', $out);
@@ -35,8 +37,10 @@ class TagsDataTransformerTest extends TestCase
     {
         $tagService = $this->createMock(TagServiceInterface::class);
 
-        $existingNature = new Tag();  $existingNature->setTitle('Nature');
-        $existingMacro  = new Tag();  $existingMacro->setTitle('Macro');
+        $existingNature = new Tag();
+        $existingNature->setTitle('Nature');
+        $existingMacro = new Tag();
+        $existingMacro->setTitle('Macro');
 
         $tagService->expects($this->exactly(3))
             ->method('findOneByTitle')
@@ -54,7 +58,7 @@ class TagsDataTransformerTest extends TestCase
         $tagService->expects($this->once())
             ->method('save')
             ->with($this->callback(function ($tag) {
-                return $tag instanceof Tag && $tag->getTitle() === 'portrait';
+                return $tag instanceof Tag && 'portrait' === $tag->getTitle();
             }));
 
         $transformer = new TagsDataTransformer($tagService);
