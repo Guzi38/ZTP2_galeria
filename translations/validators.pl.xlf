@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en" target-language="pl" datatype="plaintext" original="file.ext">
+    <body>
+      <trans-unit id="user_email_exists">
+        <source>There is already an account with this email</source>
+        <target>Istnieje już konto z tym adresem e-mail</target>
+      </trans-unit>
+      <trans-unit id="password_mismatch">
+        <source>Hasła muszą być identyczne.</source>
+        <target>Hasła muszą być identyczne.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

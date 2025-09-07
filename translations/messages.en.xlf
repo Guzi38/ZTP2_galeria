@@ -530,6 +530,22 @@
         <source>Delete a photo</source>
         <target>Delete a photo</target>
       </trans-unit>
+      <trans-unit id="message.updated_successfully">
+          <source>message.updated_successfully</source>
+          <target>updated successfully</target>
+      </trans-unit>
+      <trans-unit id="message.password_changed">
+          <source>message.password_changed</source>
+          <target>password changed successfully</target>
+      </trans-unit>
+      <trans-unit id="Hasło">
+          <source>Hasło</source>
+          <target>Password</target>
+      </trans-unit>
+      <trans-unit id="Powtórz hasło">
+          <source>Powtórz hasło</source>
+          <target>Repeat password</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

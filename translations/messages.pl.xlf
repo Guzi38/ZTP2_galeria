@@ -526,6 +526,22 @@
                 <source>edit password</source>
                 <target>edytuj hasło</target>
             </trans-unit>
+            <trans-unit id="message.updated_successfully">
+                <source>message.updated_successfully</source>
+                <target>zaktualizowano pomyślnie</target>
+            </trans-unit>
+            <trans-unit id="message.password_changed">
+                <source>message.password_changed</source>
+                <target>hasło zostało zmienione</target>
+            </trans-unit>
+            <trans-unit id="Hasło">
+                <source>Hasło</source>
+                <target>Hasło</target>
+            </trans-unit>
+            <trans-unit id="Powtórz hasło">
+                <source>Powtórz hasło</source>
+                <target>Powtórz hasło</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -16,113 +16,58 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 
-/**
- * Class PhotoEditType.
- */
 class PhotoEditType extends AbstractType
 {
-    /**
-     * data transformer.
-     *
-     * @var TagsDataTransformer
-     */
-    private $tagsDataTransformer;
-
-    /**
-     * Constructor.
-     *
-     * @param TagsDataTransformer $tagsDataTransformer Tags Data Transformer
-     */
-    public function __construct(TagsDataTransformer $tagsDataTransformer)
+    public function __construct(private readonly TagsDataTransformer $tagsDataTransformer)
     {
-        $this->tagsDataTransformer = $tagsDataTransformer;
     }
 
-    /**
-     * Form builder.
-     *
-     * @param FormBuilderInterface $builder Form Builder Interface
-     * @param array                $options Options
-     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add(
-                'title',
-                TextType::class,
-                [
-                    'label' => 'label_title',
-                    'required' => true,
-                    'attr' => ['max_length' => 120],
-                ]
-            )
-            ->add(
-                'content',
-                TextType::class,
-                [
-                    'label' => 'label.content',
-                    'required' => true,
-                    'attr' => ['max_length' => 65000],
-                ]
-            );
-        $builder->add(
-            'gallery',
-            EntityType::class,
-            [
+            ->add('title', TextType::class, [
+                'label' => 'label_title',
+                'required' => false,
+                'empty_data' => '',
+                'attr' => ['max_length' => 120],
+            ])
+            ->add('content', TextType::class, [
+                'label' => 'label.content',
+                'required' => false,
+                'empty_data' => '',
+                'attr' => ['max_length' => 65000],
+            ])
+            ->add('gallery', EntityType::class, [
                 'label' => 'label.gallery',
-                'class' => "App\Entity\Gallery",
+                'class' => 'App\Entity\Gallery',
                 'placeholder' => 'label.gallery',
                 'choice_label' => 'title',
-            ]
-        );
-        $builder->add(
-            'tags',
-            TextType::class,
-            [
+            ])
+            ->add('tags', TextType::class, [
                 'label' => 'label_tags',
                 'required' => false,
+                'empty_data' => '',
                 'attr' => ['max_length' => 128],
-            ]
-        );
-        $builder->add(
-            'file',
-            FileType::class,
-            [
+            ])
+            ->add('file', FileType::class, [
                 'mapped' => false,
                 'label' => 'label.photo',
-                'required' => false,
-                'constraints' => new Image(
-                    [
-                        'maxSize' => '1024k',
-                        'mimeTypes' => [
-                            'image/png',
-                            'image/jpeg',
-                            'image/pjpeg',
-                            'image/jpeg',
-                            'image/pjpeg',
-                        ],
-                    ]
-                ),
-            ]
-        );
-        $builder->get('tags')->addModelTransformer(
-            $this->tagsDataTransformer
-        );
+                'required' => false, // w edycji plik nie jest wymagany
+                'constraints' => new Image([
+                    'maxSize' => '1024k',
+                    'mimeTypes' => ['image/png', 'image/jpeg', 'image/pjpeg'],
+                ]),
+            ])
+        ;
+
+        $builder->get('tags')->addModelTransformer($this->tagsDataTransformer);
     }
 
-    /**
-     * Configure options.
-     *
-     * @param OptionsResolver $resolver Options Resolver
-     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => Photo::class]);
     }
 
-    /**
-     * Prefix.
-     */
     public function getBlockPrefix(): string
     {
         return 'photo';

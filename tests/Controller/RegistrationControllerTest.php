@@ -11,9 +11,9 @@ final class RegistrationControllerTest extends WebTestCase
         $client = static::createClient();
         $client->request('GET', '/register');
 
-        $this->assertResponseIsSuccessful();                // 200
+        $this->assertResponseIsSuccessful();
         $this->assertPageTitleContains('rejestracja');
-        $this->assertSelectorExists('form[name="user"]');   // formularz
-        $this->assertSelectorExists('#user_email');         // pole e-mail
+        $this->assertSelectorExists('form[name="user"]');
+        $this->assertSelectorExists('#user_email');
     }
 }

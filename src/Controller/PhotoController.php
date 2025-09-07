@@ -9,7 +9,6 @@ namespace App\Controller;
 use App\Entity\Photo;
 use App\Form\Type\PhotoEditType;
 use App\Form\Type\PhotoType;
-use App\Repository\CommentRepository;
 use App\Service\PhotoServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,13 +25,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route('/photo')]
 class PhotoController extends AbstractController
 {
-    private PhotoServiceInterface $photoService;
-    private TranslatorInterface $translator;
-
-    public function __construct(PhotoServiceInterface $photoService, TranslatorInterface $translator)
-    {
-        $this->photoService = $photoService;
-        $this->translator = $translator;
+    public function __construct(
+        private readonly PhotoServiceInterface $photoService,
+        private readonly TranslatorInterface $translator,
+    ) {
     }
 
     #[Route(name: 'photo_index', methods: 'GET')]
@@ -48,7 +44,7 @@ class PhotoController extends AbstractController
     }
 
     #[Route('/{id}', name: 'photo_show', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
-    public function show(Photo $photo, CommentRepository $commentRepository): Response
+    public function show(Photo $photo): Response
     {
         return $this->render('photo/show.html.twig', ['photo' => $photo]);
     }
@@ -62,7 +58,7 @@ class PhotoController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var UploadedFile $file */
+            /** @var UploadedFile|null $file */
             $file = $form->get('file')->getData();
             $user = $this->getUser();
 
@@ -85,14 +81,18 @@ class PhotoController extends AbstractController
         $this->denyAccessUnlessGranted('EDIT', $photo);
 
         $user = $this->getUser();
-        $form = $this->createForm(PhotoEditType::class, $photo, [
-            'method' => 'PUT',
-            'action' => $this->generateUrl('photo_edit', ['id' => $photo->getId()]),
-        ]);
+        $form = $this->createForm(
+            PhotoEditType::class,
+            $photo,
+            [
+                'method' => 'PUT',
+                'action' => $this->generateUrl('photo_edit', ['id' => $photo->getId()]),
+            ]
+        );
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var UploadedFile $file */
+            /** @var UploadedFile|null $file */
             $file = $form->get('file')->getData();
             $this->photoService->update($file, $photo, $user);
 
@@ -112,15 +112,18 @@ class PhotoController extends AbstractController
     {
         $this->denyAccessUnlessGranted('DELETE', $photo);
 
-        $form = $this->createForm(FormType::class, $photo, [
-            'method' => 'DELETE',
-            'action' => $this->generateUrl('photo_delete', ['id' => $photo->getId()]),
-        ]);
+        $form = $this->createForm(
+            FormType::class,
+            $photo,
+            [
+                'method' => 'DELETE',
+                'action' => $this->generateUrl('photo_delete', ['id' => $photo->getId()]),
+            ]
+        );
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->photoService->delete($photo);
-
             $this->addFlash('success', $this->translator->trans('message.deleted_successfully'));
 
             return $this->redirectToRoute('photo_index');
@@ -134,10 +137,9 @@ class PhotoController extends AbstractController
 
     private function getFilters(Request $request): array
     {
-        $filters = [];
-        $filters['gallery_id'] = $request->query->getInt('filters_gallery_id');
-        $filters['photos_tags_id'] = $request->query->getInt('filters_tags_id');
-
-        return $filters;
+        return [
+            'gallery_id' => $request->query->getInt('filters_gallery_id'),
+            'photos_tags_id' => $request->query->getInt('filters_tags_id'),
+        ];
     }
 }

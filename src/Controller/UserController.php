@@ -7,7 +7,8 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Form\Type\UserType;
+use App\Form\Type\ChangePasswordType;
+use App\Form\Type\UserEditType;
 use App\Service\UserServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,35 +24,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserController extends AbstractController
 {
     /**
-     * User service.
+     * @param UserServiceInterface $userService User service
+     * @param TranslatorInterface  $translator  Translator
      */
-    private UserServiceInterface $userService;
-
-    /**
-     * Translator.
-     */
-    private TranslatorInterface $translator;
-
-    /**
-     * Constructor.
-     *
-     * @param UserServiceInterface $photoService Photo service
-     * @param TranslatorInterface  $translator   Translator
-     */
-    public function __construct(UserServiceInterface $photoService, TranslatorInterface $translator)
-    {
-        $this->userService = $photoService;
-        $this->translator = $translator;
+    public function __construct(
+        private readonly UserServiceInterface $userService,
+        private readonly TranslatorInterface $translator,
+    ) {
     }
 
     /**
-     * Index action.
-     *
-     * @param Request $request HTTP Request
-     *
-     * @return Response HTTP response
+     * List users.
      */
-    #[Route(name: 'user_index', methods: 'GET')]
+    #[Route(name: 'user_index', methods: ['GET'])]
     #[IsGranted('MANAGE')]
     public function index(Request $request): Response
     {
@@ -63,18 +48,9 @@ class UserController extends AbstractController
     }
 
     /**
-     * Show action.
-     *
-     * @param User $user user
-     *
-     * @return Response HTTP response
+     * Show user.
      */
-    #[Route(
-        '/{id}',
-        name: 'user_show',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET'
-    )]
+    #[Route('/{id}', name: 'user_show', requirements: ['id' => '[1-9]\d*'], methods: ['GET'])]
     #[IsGranted('MANAGE')]
     public function show(User $user): Response
     {
@@ -82,19 +58,14 @@ class UserController extends AbstractController
     }
 
     /**
-     * Edit action.
-     *
-     * @param Request $request HTTP request
-     * @param User    $user    user entity
-     *
-     * @return Response HTTP response
+     * Edit profile data (no password here).
      */
-    #[Route('/{id}/edit', name: 'user_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
-    //    #[IsGranted('EDIT')]
+    #[Route('/{id}/edit', name: 'user_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'PUT'])]
+    // #[IsGranted('USER_EDIT', subject: 'user')]
     public function edit(Request $request, User $user): Response
     {
         $form = $this->createForm(
-            UserType::class,
+            UserEditType::class,
             $user,
             [
                 'method' => 'PUT',
@@ -104,22 +75,46 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->userService->save($user);
+            $this->userService->updateProfile($user);
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('message.created_successfully')
-            );
+            $this->addFlash('success', $this->translator->trans('message.updated_successfully'));
 
-            return $this->redirectToRoute('photo_index');
+            return $this->redirectToRoute('user_edit', ['id' => $user->getId()]);
         }
 
-        return $this->render(
-            'user/edit.html.twig',
-            [
-                'form' => $form->createView(),
-                'user' => $user,
-            ]
-        );
+        return $this->render('user/edit.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Change password (separate form and route).
+     */
+    #[Route('/{id}/password', name: 'user_change_password', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
+    // #[IsGranted('USER_EDIT', subject: 'user')]
+    public function changePassword(Request $request, User $user): Response
+    {
+        $form = $this->createForm(ChangePasswordType::class, null, [
+            'action' => $this->generateUrl('user_change_password', ['id' => $user->getId()]),
+            'method' => 'POST',
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var string $plain */
+            $plain = (string) $form->get('plainPassword')->getData();
+
+            $this->userService->changePassword($user, $plain);
+
+            $this->addFlash('success', $this->translator->trans('message.password_changed'));
+
+            return $this->redirectToRoute('user_change_password', ['id' => $user->getId()]);
+        }
+
+        return $this->render('user/change_password.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+        ]);
     }
 }

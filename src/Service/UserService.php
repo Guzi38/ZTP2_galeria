@@ -10,48 +10,17 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-/**
- * Class UserService.
- */
 class UserService implements UserServiceInterface
 {
-    /**
-     * User repository.
-     */
-    private UserRepository $userRepository;
-
-    /**
-     * Paginator.
-     */
-    private PaginatorInterface $paginator;
-
-    /**
-     * Comment service.
-     */
-    private CommentServiceInterface $commentService;
-
-    /**
-     * UserService constructor.
-     *
-     * @param CommentServiceInterface $commentService Comment service
-     * @param UserRepository          $userRepository User repository
-     * @param PaginatorInterface      $paginator      Paginator
-     */
-    public function __construct(CommentServiceInterface $commentService, UserRepository $userRepository, PaginatorInterface $paginator)
-    {
-        $this->commentService = $commentService;
-        $this->userRepository = $userRepository;
-        $this->paginator = $paginator;
+    public function __construct(
+        private readonly UserRepository $userRepository,
+        private readonly PaginatorInterface $paginator,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+    ) {
     }
 
-    /**
-     * Create paginated list.
-     *
-     * @param int $page Page number
-     *
-     * @return PaginationInterface Paginated list
-     */
     public function createPaginatedList(int $page): PaginationInterface
     {
         return $this->paginator->paginate(
@@ -61,43 +30,44 @@ class UserService implements UserServiceInterface
         );
     }
 
-    /**
-     * Save user.
-     *
-     * @param User $user User entity
-     */
-    public function save(User $user): void
+    public function updateProfile(User $user): void
     {
-        $this->userRepository->save($user);
+        $normalized = mb_strtolower(trim((string) $user->getEmail()));
+        $user->setEmail($normalized);
+
+        $this->userRepository->save($user, true);
     }
 
-    /**
-     * Edit user.
-     *
-     * @param User $user User entity
-     */
-    public function edit(User $user): void
+    public function changePassword(User $user, string $plainPassword): void
     {
-        $this->userRepository->edit($user);
+        $plainPassword = trim($plainPassword);
+        if ('' === $plainPassword) {
+            return;
+        }
+
+        $hash = $this->passwordHasher->hashPassword($user, $plainPassword);
+        $user->setPassword($hash);
+
+        $this->userRepository->save($user, true);
     }
 
-    /**
-     * Remove user.
-     *
-     * @param User $user User entity
-     */
     public function remove(User $user): void
     {
-        $this->userRepository->remove($user);
+        $this->userRepository->remove($user, true);
     }
 
-    /**
-     * Find user.
-     *
-     * @param string $email Email
-     */
     public function findOneBy(string $email): ?User
     {
         return $this->userRepository->findOneBy(['email' => $email]);
+    }
+
+    public function save(User $user): void
+    {
+        $this->updateProfile($user);
+    }
+
+    public function edit(User $user): void
+    {
+        $this->updateProfile($user);
     }
 }

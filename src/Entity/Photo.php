@@ -35,8 +35,6 @@ class Photo
     #[Gedmo\Timestampable(on: 'update')]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    // ...
-
     /**
      * Getter for updatedAt.
      *
@@ -46,8 +44,6 @@ class Photo
     {
         return $this->updatedAt;
     }
-
-    // ...
 
     /**
      * Setter for updatedAt.

@@ -39,7 +39,7 @@ class PhotoVoter extends Voter
     {
         $user = $token->getUser();
         if (!$user instanceof UserInterface) {
-            return false; // niezalogowany → brak dostępu
+            return false;
         }
 
         /** @var Photo $photo */
@@ -62,7 +62,6 @@ class PhotoVoter extends Voter
      */
     private function canModify(Photo $photo, User $user): bool
     {
-        // 🔑 porównujemy po ID zamiast po obiektach!
         if ($photo->getAuthor() && $photo->getAuthor()->getId() === $user->getId()) {
             return true;
         }

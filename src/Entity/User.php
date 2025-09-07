@@ -39,10 +39,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Assert\NotBlank]
     #[Assert\Email]
-    private ?string $email;
+    private ?string $email = null;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $login;
+    private ?string $login = null;
 
     /**
      * Roles.
@@ -54,10 +54,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Password.
+     *
+     * WAŻNE: hasło wymagamy tylko przy rejestracji (grupa `user_create`),
+     * dzięki temu edycja profilu nie wymaga podawania hasła.
      */
     #[ORM\Column(type: 'string')]
-    #[Assert\NotBlank]
-    private ?string $password;
+    #[Assert\NotBlank(groups: ['user_create'])]
+    private ?string $password = null;
 
     /**
      * Represents the relationship between this object and its associated comments.
@@ -115,10 +118,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setEmail(string $email): void
     {
-        $this->email = $email;
+        $this->email = mb_strtolower(trim($email));
     }
 
     /**
+     * /*
      * Retrieves the login of this object.
      *
      * @return string|null the login of this object, or null if it is not set

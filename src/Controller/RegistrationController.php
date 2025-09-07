@@ -1,86 +1,48 @@
 <?php
 
-/**
- * Registration controller.
- */
-
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\Type\RegistrationType;
-use App\Security\LoginFormAuthenticator;
-use App\Service\UserService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 
-/**
- * Class RegistrationController.
- */
 class RegistrationController extends AbstractController
 {
-    /**
-     * User service.
-     */
-    private UserService $userService;
-
-    /**
-     * RegistrationController constructor.
-     *
-     * @param UserService $userService User service
-     */
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+    ) {
     }
 
-    /**
-     * Register.
-     *
-     * @param Request                     $request            HTTP request
-     * @param UserPasswordHasherInterface $userPasswordHasher User password hasher
-     * @param UserAuthenticatorInterface  $userAuthenticator  User authenticator
-     * @param LoginFormAuthenticator      $authenticator      Login form authenticator
-     *
-     * @return Response HTTP response
-     */
-    #[Route(
-        '/register',
-        name: 'app_register',
-        methods: ['GET', 'POST']
-    )]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, UserAuthenticatorInterface $userAuthenticator, LoginFormAuthenticator $authenticator): Response
+    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
+    public function register(Request $request): Response
     {
         $user = new User();
-        $user->setRoles(['ROLE_USER']);
+
         $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $plain = (string) $user->getPassword();
             $user->setPassword(
-                $userPasswordHasher->hashPassword(
-                    $user,
-                    $form->get('password')->getData()
-                )
+                $this->passwordHasher->hashPassword($user, $plain)
             );
 
-            $this->userService->save($user);
+            $this->em->persist($user);
+            $this->em->flush();
 
-            return $userAuthenticator->authenticateUser(
-                $user,
-                $authenticator,
-                $request
-            );
+            $this->addFlash('success', 'Konto utworzone. Możesz się zalogować.');
+
+            return $this->redirectToRoute('app_login');
         }
 
-        return $this->render(
-            'registration/register.html.twig',
-            [
-                'form' => $form->createView(),
-            ]
-        );
+        return $this->render('registration/register.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 }

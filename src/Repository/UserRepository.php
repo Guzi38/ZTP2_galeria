@@ -10,7 +10,6 @@ use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -30,24 +29,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public const PAGINATOR_ITEMS_PER_PAGE = 10;
 
-    /**
-     * Password hasher.
-     */
-    private UserPasswordHasherInterface $passwordHasher;
-
-    /**
-     * Constructor.
-     */
-    public function __construct(ManagerRegistry $registry, UserPasswordHasherInterface $passwordHasher)
+    public function __construct(ManagerRegistry $registry)
     {
-        $this->passwordHasher = $passwordHasher;
         parent::__construct($registry, User::class);
     }
 
     /**
      * Query all records.
-     *
-     * @return QueryBuilder Query builder
      */
     public function queryAll(): QueryBuilder
     {
@@ -57,52 +45,36 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * Get or create new query builder.
-     *
-     * @param QueryBuilder|null $queryBuilder Query builder
-     *
-     * @return QueryBuilder Query builder
+     * Save entity (bez żadnego haszowania!).
      */
-    private function getOrCreateQueryBuilder(?QueryBuilder $queryBuilder = null): QueryBuilder
+    public function save(User $entity, bool $flush = false): void
     {
-        return $queryBuilder ?? $this->createQueryBuilder('user');
-    }
-
-    /**
-     * Save user.
-     */
-    public function save(User $entity): void
-    {
-        $hashedPassword = $this->passwordHasher->hashPassword($entity, $entity->getPassword());
-        $entity->setPassword($hashedPassword);
-        $entity->setRoles(['ROLE_USER']);
-        $this->getEntityManager()->persist($entity);
-
-        $this->getEntityManager()->flush();
-    }
-
-    /**
-     * Remove user.
-     */
-    public function remove(User $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
+        $this->_em->persist($entity);
         if ($flush) {
-            $this->getEntityManager()->flush();
+            $this->_em->flush();
         }
     }
 
     /**
-     * Edit user.
+     * Edit entity (alias).
      */
-    public function edit(User $entity): void
+    public function edit(User $entity, bool $flush = false): void
     {
-        $hashedPassword = $this->passwordHasher->hashPassword($entity, $entity->getPassword());
-        $entity->setPassword($hashedPassword);
-        $this->getEntityManager()->persist($entity);
+        $this->_em->persist($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
 
-        $this->getEntityManager()->flush();
+    /**
+     * Remove entity.
+     */
+    public function remove(User $entity, bool $flush = false): void
+    {
+        $this->_em->remove($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
     }
 
     /**
@@ -115,7 +87,14 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
 
         $user->setPassword($newHashedPassword);
-
         $this->save($user, true);
+    }
+
+    /**
+     * Get or create new query builder.
+     */
+    private function getOrCreateQueryBuilder(?QueryBuilder $queryBuilder = null): QueryBuilder
+    {
+        return $queryBuilder ?? $this->createQueryBuilder('user');
     }
 }
