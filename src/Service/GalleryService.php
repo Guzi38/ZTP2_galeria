@@ -98,7 +98,7 @@ class GalleryService implements GalleryServiceInterface
             $result = $this->photoRepository->countByGallery($gallery);
 
             return !($result > 0);
-        } catch (NoResultException | NonUniqueResultException) {
+        } catch (NoResultException|NonUniqueResultException) {
             return false;
         }
     }
