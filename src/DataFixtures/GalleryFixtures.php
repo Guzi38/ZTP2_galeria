@@ -1,11 +1,21 @@
 <?php
 
+/**
+ * Gallery fixtures.
+ */
+
 namespace App\DataFixtures;
 
 use App\Entity\Gallery;
 
+/**
+ * Class GalleryFixtures.
+ */
 class GalleryFixtures extends AbstractBaseFixtures
 {
+    /**
+     * Load data.
+     */
     protected function loadData(): void
     {
         if (null === $this->manager || null === $this->faker) {

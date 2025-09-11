@@ -24,15 +24,23 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route('/comment')]
 class CommentController extends AbstractController
 {
-    private CommentServiceInterface $commentService;
-    private TranslatorInterface $translator;
-
-    public function __construct(CommentServiceInterface $commentService, TranslatorInterface $translator)
+    /**
+     * Constructor.
+     *
+     * @param CommentServiceInterface $commentService Comment service
+     * @param TranslatorInterface     $translator     Translator
+     */
+    public function __construct(private readonly CommentServiceInterface $commentService, private readonly TranslatorInterface $translator)
     {
-        $this->commentService = $commentService;
-        $this->translator = $translator;
     }
 
+    /**
+     * Index action.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return Response HTTP response
+     */
     #[Route(name: 'comment_index', methods: 'GET')]
     public function index(Request $request): Response
     {
@@ -43,18 +51,28 @@ class CommentController extends AbstractController
         return $this->render('comment/index.html.twig', ['pagination' => $pagination]);
     }
 
-    #[Route(
-        '/{id}',
-        name: 'comment_show',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET'
-    )]
+    /**
+     * Show action.
+     *
+     * @param Comment $comment Comment entity
+     *
+     * @return Response HTTP response
+     */
+    #[Route('/{id}', name: 'comment_show', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     #[IsGranted('VIEW', subject: 'comment')]
     public function show(Comment $comment): Response
     {
         return $this->render('comment/show.html.twig', ['comment' => $comment]);
     }
 
+    /**
+     * Create action.
+     *
+     * @param Request $request HTTP request
+     * @param Photo   $photo   Photo entity
+     *
+     * @return Response HTTP response
+     */
     #[Route('/create/{id}', name: 'comment_create', methods: 'GET|POST')]
     #[IsGranted('ROLE_USER')]
     public function create(Request $request, Photo $photo): Response
@@ -81,6 +99,14 @@ class CommentController extends AbstractController
         return $this->render('comment/create.html.twig', ['form' => $form->createView()]);
     }
 
+    /**
+     * Edit action.
+     *
+     * @param Request $request HTTP request
+     * @param Comment $comment Comment entity
+     *
+     * @return Response HTTP response
+     */
     #[Route('/{id}/edit', name: 'comment_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
     #[IsGranted('EDIT', subject: 'comment')]
     public function edit(Request $request, Comment $comment): Response
@@ -109,6 +135,14 @@ class CommentController extends AbstractController
         ]);
     }
 
+    /**
+     * Delete action.
+     *
+     * @param Request $request HTTP request
+     * @param Comment $comment Comment entity
+     *
+     * @return Response HTTP response
+     */
     #[Route('/{id}/delete', name: 'comment_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
     #[IsGranted('DELETE', subject: 'comment')]
     public function delete(Request $request, Comment $comment): Response

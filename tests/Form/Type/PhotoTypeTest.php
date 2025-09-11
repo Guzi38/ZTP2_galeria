@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Tests for PhotoType form.
+ */
+
 namespace App\Tests\Form\Type;
 
 use App\Entity\Photo;
@@ -8,10 +12,16 @@ use App\Form\Type\PhotoType;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Form\FormFactoryInterface;
 
+/**
+ * Class PhotoTypeTest.
+ */
 class PhotoTypeTest extends KernelTestCase
 {
     private FormFactoryInterface $formFactory;
 
+    /**
+     * Set up the form factory and mock TagsDataTransformer.
+     */
     protected function setUp(): void
     {
         self::bootKernel();
@@ -25,6 +35,9 @@ class PhotoTypeTest extends KernelTestCase
         $this->formFactory = static::getContainer()->get(FormFactoryInterface::class);
     }
 
+    /**
+     * Test that the form has all expected fields.
+     */
     public function testBuildFormFields(): void
     {
         $form = $this->formFactory->create(PhotoType::class);
@@ -34,6 +47,9 @@ class PhotoTypeTest extends KernelTestCase
         }
     }
 
+    /**
+     * Test that submitting valid data maps correctly to the entity.
+     */
     public function testSubmitValidData(): void
     {
         $formData = [
@@ -52,12 +68,18 @@ class PhotoTypeTest extends KernelTestCase
         $this->assertSame('Test content', $model->getContent());
     }
 
+    /**
+     * Test that the configureOptions method sets the correct data_class.
+     */
     public function testConfigureOptions(): void
     {
         $form = $this->formFactory->create(PhotoType::class);
         $this->assertSame(Photo::class, $form->getConfig()->getOption('data_class'));
     }
 
+    /**
+     * Test that the block prefix is "photo".
+     */
     public function testGetBlockPrefix(): void
     {
         $type = static::getContainer()->get(PhotoType::class);

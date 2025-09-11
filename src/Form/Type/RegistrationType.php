@@ -53,6 +53,8 @@ class RegistrationType extends AbstractType
 
     /**
      * Configure options (ustawiamy grupę walidacji `user_create`).
+     *
+     * @param OptionsResolver $resolver The options resolver
      */
     public function configureOptions(OptionsResolver $resolver): void
     {

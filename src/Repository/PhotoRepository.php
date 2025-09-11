@@ -32,10 +32,6 @@ class PhotoRepository extends ServiceEntityRepository
     /**
      * Items per page.
      *
-     * Use constants to define configuration options that rarely change instead
-     * of specifying them in configuration files.
-     * See https://symfony.com/doc/current/best_practices.html#configuration
-     *
      * @constant int
      */
     public const PAGINATOR_ITEMS_PER_PAGE = 10;
@@ -73,6 +69,49 @@ class PhotoRepository extends ServiceEntityRepository
     }
 
     /**
+     * Save entity.
+     *
+     * @param Photo $photo Photo entity
+     */
+    public function save(Photo $photo): void
+    {
+        $this->_em->persist($photo);
+        $this->_em->flush();
+    }
+
+    /**
+     * Delete entity.
+     *
+     * @param Photo $photo Photo entity
+     */
+    public function delete(Photo $photo): void
+    {
+        $this->_em->remove($photo);
+        $this->_em->flush();
+    }
+
+    /**
+     * Count photos by gallery.
+     *
+     * @param Gallery $gallery Gallery
+     *
+     * @return int Number of tasks in gallery
+     *
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function countByGallery(Gallery $gallery): int
+    {
+        $qb = $this->getOrCreateQueryBuilder();
+
+        return $qb->select($qb->expr()->countDistinct('photo.id'))
+            ->where('photo.gallery = :gallery')
+            ->setParameter(':gallery', $gallery)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
      * Apply filters to paginated list.
      *
      * @param QueryBuilder          $queryBuilder Query builder
@@ -96,28 +135,6 @@ class PhotoRepository extends ServiceEntityRepository
     }
 
     /**
-     * Save entity.
-     *
-     * @param Photo $photo Photo entity
-     */
-    public function save(Photo $photo): void
-    {
-        $this->_em->persist($photo);
-        $this->_em->flush();
-    }
-
-    /**
-     * Delete entity.
-     *
-     * @param Photo $photo Photo entity
-     */
-    public function delete(Photo $photo): void
-    {
-        $this->_em->remove($photo);
-        $this->_em->flush();
-    }
-
-    /**
      * Get or create new query builder.
      *
      * @param QueryBuilder|null $queryBuilder Query builder
@@ -127,26 +144,5 @@ class PhotoRepository extends ServiceEntityRepository
     private function getOrCreateQueryBuilder(?QueryBuilder $queryBuilder = null): QueryBuilder
     {
         return $queryBuilder ?? $this->createQueryBuilder('photo');
-    }
-
-    /**
-     * Count photos by gallery.
-     *
-     * @param Gallery $gallery Gallery
-     *
-     * @return int Number of tasks in gallery
-     *
-     * @throws NoResultException
-     * @throws NonUniqueResultException
-     */
-    public function countByGallery(Gallery $gallery): int
-    {
-        $qb = $this->getOrCreateQueryBuilder();
-
-        return $qb->select($qb->expr()->countDistinct('photo.id'))
-            ->where('photo.gallery = :gallery')
-            ->setParameter(':gallery', $gallery)
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 }

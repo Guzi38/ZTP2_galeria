@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Tests for CommentType form.
+ */
+
 namespace App\Tests\Form\Type;
 
 use App\Entity\Comment;
@@ -9,8 +13,14 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 #[CoversClass(CommentType::class)]
+/**
+ * Class CommentTypeTest.
+ */
 class CommentTypeTest extends TypeTestCase
 {
+    /**
+     * Test that the form has expected fields and options.
+     */
     public function testFormHasExpectedFieldsAndOptions(): void
     {
         $form = $this->factory->create(CommentType::class);
@@ -31,6 +41,9 @@ class CommentTypeTest extends TypeTestCase
         $this->assertSame(Comment::class, $form->getConfig()->getOption('data_class'));
     }
 
+    /**
+     * Test that valid data submission maps correctly to the entity.
+     */
     public function testSubmitValidDataMapsToEntity(): void
     {
         $comment = new Comment();
@@ -46,6 +59,9 @@ class CommentTypeTest extends TypeTestCase
         $this->assertSame('Hello world', $comment->getContent());
     }
 
+    /**
+     * Test that the block prefix is "comment".
+     */
     public function testBlockPrefix(): void
     {
         $type = new CommentType();

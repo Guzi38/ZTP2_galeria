@@ -1,12 +1,22 @@
 <?php
 
+/**
+ * GalleryTest.
+ */
+
 namespace App\Tests\Entity;
 
 use App\Entity\Gallery;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class GalleryTest.
+ */
 final class GalleryTest extends TestCase
 {
+    /**
+     * Test getters and setters of Gallery entity.
+     */
     public function testGettersAndSetters(): void
     {
         $g = new Gallery();

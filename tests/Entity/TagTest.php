@@ -1,12 +1,22 @@
 <?php
 
+/**
+ * TagTest.
+ */
+
 namespace App\Tests\Entity;
 
 use App\Entity\Tag;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class TagTest.
+ */
 final class TagTest extends TestCase
 {
+    /**
+     * Test getters and setters of Tag entity.
+     */
     public function testGettersAndSetters(): void
     {
         $tag = new Tag();

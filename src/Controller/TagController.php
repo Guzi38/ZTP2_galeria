@@ -24,31 +24,19 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class TagController extends AbstractController
 {
     /**
-     * Tag service.
-     */
-    private TagServiceInterface $tagService;
-
-    /**
-     * Translator.
-     */
-    private TranslatorInterface $translator;
-
-    /**
      * Constructor.
      *
-     * @param TagServiceInterface $tagService Tag service interface
+     * @param TagServiceInterface $tagService Tag service
      * @param TranslatorInterface $translator Translator
      */
-    public function __construct(TagServiceInterface $tagService, TranslatorInterface $translator)
+    public function __construct(private readonly TagServiceInterface $tagService, private readonly TranslatorInterface $translator)
     {
-        $this->tagService = $tagService;
-        $this->translator = $translator;
     }
 
     /**
      * Index action.
      *
-     * @param Request $request HTTP Request
+     * @param Request $request HTTP request
      *
      * @return Response HTTP response
      */
@@ -65,16 +53,11 @@ class TagController extends AbstractController
     /**
      * Show action.
      *
-     * @param Tag $tag Tag
+     * @param Tag $tag Tag entity
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/{id}',
-        name: 'tag_show',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET'
-    )]
+    #[Route('/{id}', name: 'tag_show', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     #[IsGranted('VIEW', subject: 'tag')]
     public function show(Tag $tag): Response
     {
@@ -88,7 +71,8 @@ class TagController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route('/create', name: 'tag_create', methods: 'GET|POST', )]
+    #[Route('/create', name: 'tag_create', methods: 'GET|POST')]
+    #[IsGranted('ROLE_USER')]
     public function create(Request $request): Response
     {
         $tag = new Tag();
@@ -102,10 +86,7 @@ class TagController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->tagService->save($tag);
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('message.created_successfully')
-            );
+            $this->addFlash('success', $this->translator->trans('message.created_successfully'));
 
             return $this->redirectToRoute('tag_index');
         }
@@ -139,21 +120,15 @@ class TagController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->tagService->save($tag);
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('message.edited_successfully')
-            );
+            $this->addFlash('success', $this->translator->trans('message.edited_successfully'));
 
             return $this->redirectToRoute('tag_index');
         }
 
-        return $this->render(
-            'tag/edit.html.twig',
-            [
-                'form' => $form->createView(),
-                'tag' => $tag,
-            ]
-        );
+        return $this->render('tag/edit.html.twig', [
+            'form' => $form->createView(),
+            'tag' => $tag,
+        ]);
     }
 
     /**
@@ -182,20 +157,14 @@ class TagController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->tagService->delete($tag);
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('message.deleted_successfully')
-            );
+            $this->addFlash('success', $this->translator->trans('message.deleted_successfully'));
 
             return $this->redirectToRoute('tag_index');
         }
 
-        return $this->render(
-            'tag/delete.html.twig',
-            [
-                'form' => $form->createView(),
-                'tag' => $tag,
-            ]
-        );
+        return $this->render('tag/delete.html.twig', [
+            'form' => $form->createView(),
+            'tag' => $tag,
+        ]);
     }
 }

@@ -16,12 +16,28 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Image;
 
+/**
+ * Class PhotoEditType.
+ *
+ * Form type for editing a photo entity.
+ */
 class PhotoEditType extends AbstractType
 {
+    /**
+     * Constructor.
+     *
+     * @param TagsDataTransformer $tagsDataTransformer Data transformer for tags
+     */
     public function __construct(private readonly TagsDataTransformer $tagsDataTransformer)
     {
     }
 
+    /**
+     * Builds the photo edit form.
+     *
+     * @param FormBuilderInterface $builder Form builder
+     * @param array<string, mixed> $options Options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -63,11 +79,21 @@ class PhotoEditType extends AbstractType
         $builder->get('tags')->addModelTransformer($this->tagsDataTransformer);
     }
 
+    /**
+     * Configures options for this form.
+     *
+     * @param OptionsResolver $resolver Options resolver
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults(['data_class' => Photo::class]);
     }
 
+    /**
+     * Returns block prefix for this form.
+     *
+     * @return string Block prefix
+     */
     public function getBlockPrefix(): string
     {
         return 'photo';

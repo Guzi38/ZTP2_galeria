@@ -65,6 +65,14 @@ class Tag
     private ?string $slug;
 
     /**
+     * Photos.
+     *
+     * @var ArrayCollection<int, Photo>
+     */
+    #[ORM\ManyToMany(targetEntity: Photo::class, mappedBy: 'tags')]
+    private $photos;
+
+    /**
      * Getter for Id.
      *
      * @return int|null Id
@@ -88,6 +96,8 @@ class Tag
      * Setter for created at.
      *
      * @param \DateTimeImmutable $createdAt Created at
+     *
+     * @return self
      */
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
@@ -110,6 +120,8 @@ class Tag
      * Setter for updated at.
      *
      * @param \DateTimeImmutable $updatedAt Updated at
+     *
+     * @return self
      */
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
@@ -132,6 +144,8 @@ class Tag
      * Setter for title.
      *
      * @param string $title Title
+     *
+     * @return self
      */
     public function setTitle(string $title): self
     {
@@ -154,6 +168,8 @@ class Tag
      * Setter for slug.
      *
      * @param string $slug Slug
+     *
+     * @return self
      */
     public function setSlug(string $slug): self
     {
@@ -161,10 +177,4 @@ class Tag
 
         return $this;
     }
-
-    /**
-     * @var ArrayCollection<int, Photo>
-     */
-    #[ORM\ManyToMany(targetEntity: Photo::class, mappedBy: 'tags')]
-    private $photos;
 }

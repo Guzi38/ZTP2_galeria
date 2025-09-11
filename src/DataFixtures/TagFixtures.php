@@ -1,11 +1,21 @@
 <?php
 
+/**
+ * Tag fixtures.
+ */
+
 namespace App\DataFixtures;
 
 use App\Entity\Tag;
 
+/**
+ * Class TagFixtures.
+ */
 class TagFixtures extends AbstractBaseFixtures
 {
+    /**
+     * Load data.
+     */
     protected function loadData(): void
     {
         if (null === $this->manager || null === $this->faker) {

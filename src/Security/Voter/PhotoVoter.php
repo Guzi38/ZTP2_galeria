@@ -24,17 +24,39 @@ class PhotoVoter extends Voter
 
     private Security $security;
 
+    /**
+     * Constructor.
+     *
+     * @param Security $security Security service
+     */
     public function __construct(Security $security)
     {
         $this->security = $security;
     }
 
+    /**
+     * Checks if the given attribute and subject are supported by this voter.
+     *
+     * @param string $attribute Attribute (EDIT, VIEW, DELETE)
+     * @param mixed  $subject   Subject to check (should be a Photo)
+     *
+     * @return bool True if supported, false otherwise
+     */
     protected function supports(string $attribute, $subject): bool
     {
         return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE])
             && $subject instanceof Photo;
     }
 
+    /**
+     * Performs the access decision.
+     *
+     * @param string         $attribute Attribute being voted on
+     * @param mixed          $subject   Subject (Photo entity)
+     * @param TokenInterface $token     Security token
+     *
+     * @return bool True if granted, false otherwise
+     */
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
@@ -58,7 +80,12 @@ class PhotoVoter extends Voter
     }
 
     /**
-     * Sprawdza czy użytkownik jest autorem albo adminem.
+     * Checks if a user can modify the photo (author or admin).
+     *
+     * @param Photo $photo Photo entity
+     * @param User  $user  User entity
+     *
+     * @return bool True if user can modify, false otherwise
      */
     private function canModify(Photo $photo, User $user): bool
     {

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Registration controller.
+ */
+
 namespace App\Controller;
 
 use App\Entity\User;
@@ -11,14 +15,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class RegistrationController.
+ */
 class RegistrationController extends AbstractController
 {
-    public function __construct(
-        private readonly EntityManagerInterface $em,
-        private readonly UserPasswordHasherInterface $passwordHasher,
-    ) {
+    /**
+     * Constructor.
+     *
+     * @param EntityManagerInterface      $em             Entity manager
+     * @param UserPasswordHasherInterface $passwordHasher Password hasher
+     */
+    public function __construct(private readonly EntityManagerInterface $em, private readonly UserPasswordHasherInterface $passwordHasher)
+    {
     }
 
+    /**
+     * Register action.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return Response HTTP response
+     */
     #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
     public function register(Request $request): Response
     {

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Login form authenticator.
+ */
+
 namespace App\Security;
 
 use App\Repository\UserRepository;
@@ -16,6 +20,9 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordC
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Util\TargetPathTrait;
 
+/**
+ * Class LoginFormAuthenticator.
+ */
 class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
 {
     use TargetPathTrait;
@@ -23,18 +30,36 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     public const LOGIN_ROUTE = 'app_login';
     public const DEFAULT_ROUTE = 'photo_index';
 
-    public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly UrlGeneratorInterface $urlGenerator,
-    ) {
+    /**
+     * Constructor.
+     *
+     * @param UserRepository        $userRepository User repository
+     * @param UrlGeneratorInterface $urlGenerator   URL generator
+     */
+    public function __construct(private readonly UserRepository $userRepository, private readonly UrlGeneratorInterface $urlGenerator)
+    {
     }
 
+    /**
+     * Checks if request is supported.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return bool True if request is supported
+     */
     public function supports(Request $request): bool
     {
         return 'app_login' === $request->attributes->get('_route')
             && $request->isMethod('POST');
     }
 
+    /**
+     * Authenticates user.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return Passport Passport object
+     */
     public function authenticate(Request $request): Passport
     {
         $email = mb_strtolower(trim((string) $request->request->get('email', '')));
@@ -54,6 +79,15 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         );
     }
 
+    /**
+     * Handles successful authentication.
+     *
+     * @param Request        $request      HTTP request
+     * @param TokenInterface $token        Security token
+     * @param string         $firewallName Firewall name
+     *
+     * @return Response|null Redirect response or null
+     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
@@ -63,6 +97,13 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         return new RedirectResponse($this->urlGenerator->generate(self::DEFAULT_ROUTE));
     }
 
+    /**
+     * Gets login URL.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return string Login URL
+     */
     protected function getLoginUrl(Request $request): string
     {
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);

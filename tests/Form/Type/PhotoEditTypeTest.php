@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Tests for PhotoEditType form.
+ */
+
 namespace App\Tests\Form\Type;
 
 use App\Entity\Photo;
@@ -13,16 +17,25 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class PhotoEditTypeTest.
+ */
 class PhotoEditTypeTest extends TestCase
 {
     /** @var TagsDataTransformer|MockObject */
     private $tagsDataTransformer;
 
+    /**
+     * Set up the mock for TagsDataTransformer.
+     */
     protected function setUp(): void
     {
         $this->tagsDataTransformer = $this->createMock(TagsDataTransformer::class);
     }
 
+    /**
+     * Test that buildForm adds all expected fields and the tags transformer.
+     */
     public function testBuildFormAddsFieldsAndTransformer(): void
     {
         $type = new PhotoEditType($this->tagsDataTransformer);
@@ -59,6 +72,9 @@ class PhotoEditTypeTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    /**
+     * Test that configureOptions sets the correct data_class.
+     */
     public function testConfigureOptionsSetsDataClass(): void
     {
         $type = new PhotoEditType($this->tagsDataTransformer);
@@ -70,6 +86,9 @@ class PhotoEditTypeTest extends TestCase
         $this->assertSame(Photo::class, $resolved['data_class']);
     }
 
+    /**
+     * Test that the block prefix is "photo".
+     */
     public function testBlockPrefix(): void
     {
         $type = new PhotoEditType($this->tagsDataTransformer);

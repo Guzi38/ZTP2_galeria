@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Tests for PhotoService.
+ */
+
 namespace App\Tests\Service;
 
 use App\Entity\Photo;
@@ -14,6 +18,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * Class PhotoServiceTest.
+ */
 class PhotoServiceTest extends TestCase
 {
     private PhotoRepository $photoRepository;
@@ -24,6 +31,9 @@ class PhotoServiceTest extends TestCase
     private Filesystem $filesystem;
     private PhotoService $service;
 
+    /**
+     * Set up mocks and the service under test.
+     */
     protected function setUp(): void
     {
         $this->photoRepository = $this->createMock(PhotoRepository::class);
@@ -44,6 +54,9 @@ class PhotoServiceTest extends TestCase
         );
     }
 
+    /**
+     * Test that save() delegates to repository.
+     */
     public function testSaveCallsRepository(): void
     {
         $photo = new Photo();
@@ -52,6 +65,9 @@ class PhotoServiceTest extends TestCase
         $this->service->save($photo);
     }
 
+    /**
+     * Test that delete() delegates to repository.
+     */
     public function testDeleteCallsRepository(): void
     {
         $photo = new Photo();
@@ -60,6 +76,9 @@ class PhotoServiceTest extends TestCase
         $this->service->delete($photo);
     }
 
+    /**
+     * Test that prepareFilters() maps gallery_id and tag_id.
+     */
     public function testPrepareFiltersWithGalleryAndTag(): void
     {
         $gallery = $this->createMock(\App\Entity\Gallery::class);
@@ -74,6 +93,9 @@ class PhotoServiceTest extends TestCase
         $this->assertArrayHasKey('tag', $filters);
     }
 
+    /**
+     * Test that create() uploads file and saves photo.
+     */
     public function testCreateUploadsFileAndSavesPhoto(): void
     {
         $file = $this->createMock(UploadedFile::class);
@@ -90,6 +112,9 @@ class PhotoServiceTest extends TestCase
         $this->assertSame($user, $photo->getAuthor());
     }
 
+    /**
+     * Test that update() replaces old file with new one.
+     */
     public function testUpdateReplacesFile(): void
     {
         $file = $this->createMock(UploadedFile::class);
@@ -108,6 +133,9 @@ class PhotoServiceTest extends TestCase
         $this->assertSame($user, $photo->getAuthor());
     }
 
+    /**
+     * Test that update() without file keeps filename unchanged.
+     */
     public function testUpdateWithoutFileKeepsFilename(): void
     {
         $photo = new Photo();

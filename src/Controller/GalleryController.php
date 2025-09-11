@@ -24,25 +24,13 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class GalleryController extends AbstractController
 {
     /**
-     * Gallery service.
-     */
-    private GalleryServiceInterface $galleryService;
-
-    /**
-     * Translator.
-     */
-    private TranslatorInterface $translator;
-
-    /**
      * Constructor.
      *
-     * @param GalleryServiceInterface $photoService Photo service
-     * @param TranslatorInterface     $translator   Translator
+     * @param GalleryServiceInterface $galleryService Gallery service
+     * @param TranslatorInterface     $translator     Translator
      */
-    public function __construct(GalleryServiceInterface $photoService, TranslatorInterface $translator)
+    public function __construct(private readonly GalleryServiceInterface $galleryService, private readonly TranslatorInterface $translator)
     {
-        $this->galleryService = $photoService;
-        $this->translator = $translator;
     }
 
     /**
@@ -65,16 +53,11 @@ class GalleryController extends AbstractController
     /**
      * Show action.
      *
-     * @param Gallery $gallery Gallery
+     * @param Gallery $gallery Gallery entity
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/{id}',
-        name: 'gallery_show',
-        requirements: ['id' => '[1-9]\d*'],
-        methods: 'GET'
-    )]
+    #[Route('/{id}', name: 'gallery_show', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     #[IsGranted('VIEW', subject: 'gallery')]
     public function show(Gallery $gallery): Response
     {
@@ -88,11 +71,8 @@ class GalleryController extends AbstractController
      *
      * @return Response HTTP response
      */
-    #[Route(
-        '/create',
-        name: 'gallery_create',
-        methods: 'GET|POST',
-    )]
+    #[Route('/create', name: 'gallery_create', methods: 'GET|POST')]
+    #[IsGranted('ROLE_USER')]
     public function create(Request $request): Response
     {
         $gallery = new Gallery();
@@ -102,18 +82,12 @@ class GalleryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->galleryService->save($gallery);
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('message.created_successfully')
-            );
+            $this->addFlash('success', $this->translator->trans('message.created_successfully'));
 
             return $this->redirectToRoute('gallery_index');
         }
 
-        return $this->render(
-            'gallery/create.html.twig',
-            ['form' => $form->createView()]
-        );
+        return $this->render('gallery/create.html.twig', ['form' => $form->createView()]);
     }
 
     /**
@@ -142,21 +116,15 @@ class GalleryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->galleryService->save($gallery);
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('message.created_successfully')
-            );
+            $this->addFlash('success', $this->translator->trans('message.created_successfully'));
 
             return $this->redirectToRoute('gallery_index');
         }
 
-        return $this->render(
-            'gallery/edit.html.twig',
-            [
-                'form' => $form->createView(),
-                'gallery' => $gallery,
-            ]
-        );
+        return $this->render('gallery/edit.html.twig', [
+            'form' => $form->createView(),
+            'gallery' => $gallery,
+        ]);
     }
 
     /**
@@ -173,10 +141,7 @@ class GalleryController extends AbstractController
     public function delete(Request $request, Gallery $gallery): Response
     {
         if (!$this->galleryService->canBeDeleted($gallery)) {
-            $this->addFlash(
-                'warning',
-                $this->translator->trans('message.gallery_contains_photos')
-            );
+            $this->addFlash('warning', $this->translator->trans('message.gallery_contains_photos'));
 
             return $this->redirectToRoute('gallery_index');
         }
@@ -194,20 +159,14 @@ class GalleryController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->galleryService->delete($gallery);
 
-            $this->addFlash(
-                'success',
-                $this->translator->trans('message.deleted_successfully')
-            );
+            $this->addFlash('success', $this->translator->trans('message.deleted_successfully'));
 
             return $this->redirectToRoute('gallery_index');
         }
 
-        return $this->render(
-            'gallery/delete.html.twig',
-            [
-                'form' => $form->createView(),
-                'gallery' => $gallery,
-            ]
-        );
+        return $this->render('gallery/delete.html.twig', [
+            'form' => $form->createView(),
+            'gallery' => $gallery,
+        ]);
     }
 }

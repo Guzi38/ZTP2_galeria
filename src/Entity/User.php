@@ -216,6 +216,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * hashing algorithm (e.g. bcrypt or sodium) in your security.yaml.
      *
      * @see UserInterface
+     *
+     * @return string|null Always null because modern algorithms do not require a salt
      */
     public function getSalt(): ?string
     {

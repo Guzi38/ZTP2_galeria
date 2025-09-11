@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Tests for TagsDataTransformer.
+ */
+
 namespace App\Tests\Form\DataTransformer;
 
 use App\Entity\Tag;
@@ -8,8 +12,14 @@ use App\Service\TagServiceInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class TagsDataTransformerTest.
+ */
 class TagsDataTransformerTest extends TestCase
 {
+    /**
+     * Test that an empty collection is transformed into an empty string.
+     */
     public function testTransformEmptyCollectionReturnsEmptyString(): void
     {
         $tagService = $this->createMock(TagServiceInterface::class);
@@ -19,6 +29,9 @@ class TagsDataTransformerTest extends TestCase
         $this->assertSame('', $out);
     }
 
+    /**
+     * Test that tags are transformed into a comma-separated string.
+     */
     public function testTransformReturnsCommaSeparatedTitles(): void
     {
         $tagService = $this->createMock(TagServiceInterface::class);
@@ -33,6 +46,9 @@ class TagsDataTransformerTest extends TestCase
         $this->assertSame('Nature, Portrait', $out);
     }
 
+    /**
+     * Test that reverseTransform finds existing tags and creates new ones if needed.
+     */
     public function testReverseTransformFindsExistingAndCreatesNew(): void
     {
         $tagService = $this->createMock(TagServiceInterface::class);
@@ -72,6 +88,9 @@ class TagsDataTransformerTest extends TestCase
         $this->assertSame($existingMacro, $result[2]);
     }
 
+    /**
+     * Test that reverseTransform skips empty tokens.
+     */
     public function testReverseTransformSkipsEmptyTokens(): void
     {
         $tagService = $this->createMock(TagServiceInterface::class);

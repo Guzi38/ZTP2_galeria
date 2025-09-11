@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Tests for GalleryType form.
+ */
+
 namespace App\Tests\Form\Type;
 
 use App\Entity\Gallery;
@@ -9,8 +13,14 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 #[CoversClass(GalleryType::class)]
+/**
+ * Class GalleryTypeTest.
+ */
 class GalleryTypeTest extends TypeTestCase
 {
+    /**
+     * Test that the form has expected fields and options.
+     */
     public function testFormHasExpectedFieldsAndOptions(): void
     {
         $form = $this->factory->create(GalleryType::class);
@@ -31,6 +41,9 @@ class GalleryTypeTest extends TypeTestCase
         $this->assertSame(Gallery::class, $form->getConfig()->getOption('data_class'));
     }
 
+    /**
+     * Test that valid data submission maps to the entity.
+     */
     public function testSubmitValidDataMapsToEntity(): void
     {
         $gallery = new Gallery();
@@ -44,6 +57,9 @@ class GalleryTypeTest extends TypeTestCase
         $this->assertSame('Summer Vibes', $gallery->getTitle());
     }
 
+    /**
+     * Test that the block prefix is "gallery".
+     */
     public function testBlockPrefix(): void
     {
         $type = new GalleryType();

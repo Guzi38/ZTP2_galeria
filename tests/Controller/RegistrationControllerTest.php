@@ -1,11 +1,21 @@
 <?php
 
+/**
+ * Registration controller test.
+ */
+
 namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
+/**
+ * Class RegistrationControllerTest.
+ */
 final class RegistrationControllerTest extends WebTestCase
 {
+    /**
+     * Test if the registration page loads correctly and contains required elements.
+     */
     public function testRegisterPageLoads(): void
     {
         $client = static::createClient();

@@ -26,9 +26,16 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 {
     /**
      * Pagination.
+     *
+     * @constant int
      */
     public const PAGINATOR_ITEMS_PER_PAGE = 10;
 
+    /**
+     * Constructor.
+     *
+     * @param ManagerRegistry $registry Manager registry
+     */
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, User::class);
@@ -36,6 +43,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Query all records.
+     *
+     * @return QueryBuilder Query builder
      */
     public function queryAll(): QueryBuilder
     {
@@ -46,6 +55,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Save entity (bez żadnego haszowania!).
+     *
+     * @param User $entity User entity
+     * @param bool $flush  Whether to flush changes to the database
      */
     public function save(User $entity, bool $flush = false): void
     {
@@ -57,6 +69,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Edit entity (alias).
+     *
+     * @param User $entity User entity
+     * @param bool $flush  Whether to flush changes to the database
      */
     public function edit(User $entity, bool $flush = false): void
     {
@@ -68,6 +83,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Remove entity.
+     *
+     * @param User $entity User entity
+     * @param bool $flush  Whether to flush changes to the database
      */
     public function remove(User $entity, bool $flush = false): void
     {
@@ -79,6 +97,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
+     *
+     * @param PasswordAuthenticatedUserInterface $user              User entity
+     * @param string                             $newHashedPassword The new hashed password
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
@@ -92,6 +113,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     /**
      * Get or create new query builder.
+     *
+     * @param QueryBuilder|null $queryBuilder Optional query builder
+     *
+     * @return QueryBuilder Query builder
      */
     private function getOrCreateQueryBuilder(?QueryBuilder $queryBuilder = null): QueryBuilder
     {

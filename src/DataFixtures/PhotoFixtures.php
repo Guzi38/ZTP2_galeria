@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Photo fixtures.
+ */
+
 namespace App\DataFixtures;
 
 use App\Entity\Gallery;
@@ -8,8 +12,28 @@ use App\Entity\Tag;
 use App\Entity\User;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
+/**
+ * Class PhotoFixtures.
+ */
 class PhotoFixtures extends AbstractBaseFixtures implements DependentFixtureInterface
 {
+    /**
+     * Get dependencies.
+     *
+     * @return array<int, string> Array of dependent fixture classes
+     */
+    public function getDependencies(): array
+    {
+        return [
+            GalleryFixtures::class,
+            TagFixtures::class,
+            UserFixtures::class,
+        ];
+    }
+
+    /**
+     * Load data.
+     */
     protected function loadData(): void
     {
         if (null === $this->manager || null === $this->faker) {
@@ -45,14 +69,5 @@ class PhotoFixtures extends AbstractBaseFixtures implements DependentFixtureInte
         });
 
         $this->manager->flush();
-    }
-
-    public function getDependencies(): array
-    {
-        return [
-            GalleryFixtures::class,
-            TagFixtures::class,
-            UserFixtures::class,
-        ];
     }
 }

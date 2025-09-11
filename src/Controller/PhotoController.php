@@ -25,12 +25,23 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route('/photo')]
 class PhotoController extends AbstractController
 {
-    public function __construct(
-        private readonly PhotoServiceInterface $photoService,
-        private readonly TranslatorInterface $translator,
-    ) {
+    /**
+     * Constructor.
+     *
+     * @param PhotoServiceInterface $photoService Photo service
+     * @param TranslatorInterface   $translator   Translator
+     */
+    public function __construct(private readonly PhotoServiceInterface $photoService, private readonly TranslatorInterface $translator)
+    {
     }
 
+    /**
+     * Index action.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return Response HTTP response
+     */
     #[Route(name: 'photo_index', methods: 'GET')]
     public function index(Request $request): Response
     {
@@ -43,12 +54,26 @@ class PhotoController extends AbstractController
         return $this->render('photo/index.html.twig', ['pagination' => $pagination]);
     }
 
+    /**
+     * Show action.
+     *
+     * @param Photo $photo Photo entity
+     *
+     * @return Response HTTP response
+     */
     #[Route('/{id}', name: 'photo_show', requirements: ['id' => '[1-9]\d*'], methods: 'GET')]
     public function show(Photo $photo): Response
     {
         return $this->render('photo/show.html.twig', ['photo' => $photo]);
     }
 
+    /**
+     * Create action.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return Response HTTP response
+     */
     #[IsGranted('ROLE_USER')]
     #[Route('/create', name: 'photo_create', methods: 'GET|POST')]
     public function create(Request $request): Response
@@ -75,6 +100,14 @@ class PhotoController extends AbstractController
         return $this->render('photo/create.html.twig', ['form' => $form->createView()]);
     }
 
+    /**
+     * Edit action.
+     *
+     * @param Request $request HTTP request
+     * @param Photo   $photo   Photo entity
+     *
+     * @return Response HTTP response
+     */
     #[Route('/{id}/edit', name: 'photo_edit', requirements: ['id' => '[1-9]\d*'], methods: 'GET|PUT')]
     public function edit(Request $request, Photo $photo): Response
     {
@@ -107,6 +140,14 @@ class PhotoController extends AbstractController
         ]);
     }
 
+    /**
+     * Delete action.
+     *
+     * @param Request $request HTTP request
+     * @param Photo   $photo   Photo entity
+     *
+     * @return Response HTTP response
+     */
     #[Route('/{id}/delete', name: 'photo_delete', requirements: ['id' => '[1-9]\d*'], methods: 'GET|DELETE')]
     public function delete(Request $request, Photo $photo): Response
     {
@@ -135,6 +176,13 @@ class PhotoController extends AbstractController
         ]);
     }
 
+    /**
+     * Get filters.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return array<string,int> Filters
+     */
     private function getFilters(Request $request): array
     {
         return [

@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Comment fixtures.
+ */
+
 namespace App\DataFixtures;
 
 use App\Entity\Comment;
@@ -7,8 +11,27 @@ use App\Entity\Photo;
 use App\Entity\User;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
+/**
+ * Class CommentFixtures.
+ */
 class CommentFixtures extends AbstractBaseFixtures implements DependentFixtureInterface
 {
+    /**
+     * Get dependencies.
+     *
+     * @return array<int, string> Array of dependent fixture classes
+     */
+    public function getDependencies(): array
+    {
+        return [
+            PhotoFixtures::class,
+            UserFixtures::class,
+        ];
+    }
+
+    /**
+     * Load data.
+     */
     protected function loadData(): void
     {
         if (null === $this->manager || null === $this->faker) {
@@ -31,13 +54,5 @@ class CommentFixtures extends AbstractBaseFixtures implements DependentFixtureIn
         });
 
         $this->manager->flush();
-    }
-
-    public function getDependencies(): array
-    {
-        return [
-            PhotoFixtures::class,
-            UserFixtures::class,
-        ];
     }
 }

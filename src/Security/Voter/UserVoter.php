@@ -17,32 +17,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class UserVoter extends Voter
 {
-    /**
-     * Edit permission.
-     *
-     * @const string
-     */
     public const EDIT = 'EDIT';
-
-    /**
-     * View permission.
-     *
-     * @const string
-     */
     public const VIEW = 'VIEW';
-
-    /**
-     * Delete permission.
-     *
-     * @const string
-     */
     public const DELETE = 'DELETE';
-
-    /**
-     * Check permission.
-     *
-     * @const string
-     */
     public const MANAGE = 'MANAGE';
 
     /**
@@ -51,7 +28,7 @@ class UserVoter extends Voter
     private Security $security;
 
     /**
-     * OrderVoter constructor.
+     * Constructor.
      *
      * @param Security $security Security helper
      */
@@ -63,43 +40,43 @@ class UserVoter extends Voter
     /**
      * Determines if the attribute and subject are supported by this voter.
      *
-     * @param string $attribute An attribute
-     * @param mixed  $subject   The subject to secure, e.g. an object the user wants to access or any other PHP type
+     * @param string $attribute Attribute
+     * @param mixed  $subject   Subject
      *
      * @return bool Result
      */
     protected function supports(string $attribute, $subject): bool
     {
-        return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE, self::MANAGE])
-            && (null === $subject || $subject instanceof User);
+        return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE, self::MANAGE], true)
+            && $subject instanceof User;
     }
 
     /**
      * Perform a single access check operation on a given attribute, subject and token.
-     * It is safe to assume that $attribute and $subject already passed the "supports()" method check.
      *
      * @param string         $attribute Permission name
      * @param mixed          $subject   Object
      * @param TokenInterface $token     Security token
      *
-     * @return bool Vote result
+     * @return bool Result
      */
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
     {
-        $user = $token->getUser();
-        if (!$user instanceof UserInterface) {
+        $loggedUser = $token->getUser();
+        if (!$loggedUser instanceof UserInterface) {
             return false;
         }
 
+        /* @var User $subject */
         switch ($attribute) {
             case self::MANAGE:
-                return $this->canManage($user);
+                return $this->security->isGranted('ROLE_ADMIN');
             case self::VIEW:
-                return $this->canView($user);
+                return $this->canView($subject, $loggedUser);
             case self::EDIT:
-                return $this->canEdit($user);
+                return $this->canEdit($subject, $loggedUser);
             case self::DELETE:
-                return $this->canDelete($user);
+                return $this->canDelete($loggedUser);
         }
 
         return false;
@@ -108,61 +85,47 @@ class UserVoter extends Voter
     /**
      * Checks if user can edit User.
      *
-     * @param User $user User
+     * @param User          $subject    Target user
+     * @param UserInterface $loggedUser Logged-in user
      *
      * @return bool Result
      */
-    private function canEdit(User $user): bool
+    private function canEdit(User $subject, UserInterface $loggedUser): bool
     {
-        if ($user->getAuthor() === $user) {
-            return true;
-        }
-        if ($this->security->isGranted('ROLE_ADMIN')) {
+        // user can edit himself
+        if ($subject->getId() === $loggedUser->getId()) {
             return true;
         }
 
-        return false;
+        // admin can edit anyone
+        return $this->security->isGranted('ROLE_ADMIN');
     }
 
     /**
      * Checks if user can view User.
      *
-     * @param User $user User
+     * @param User          $subject    Target user
+     * @param UserInterface $loggedUser Logged-in user
      *
      * @return bool Result
      */
-    private function canView(User $user): bool
+    private function canView(User $subject, UserInterface $loggedUser): bool
     {
-        if ($user->getAuthor() === $user) {
-            return true;
-        }
-        if ($this->security->isGranted('ROLE_ADMIN')) {
+        if ($subject->getId() === $loggedUser->getId()) {
             return true;
         }
 
-        return false;
-    }
-
-    /**
-     * Checks if user can delete User.
-     *
-     * @param User $user User
-     *
-     * @return bool Result
-     */
-    private function canDelete(User $user): bool
-    {
         return $this->security->isGranted('ROLE_ADMIN');
     }
 
     /**
      * Checks if user can delete User.
      *
-     * @param User $user User
+     * @param UserInterface $loggedUser Logged-in user
      *
      * @return bool Result
      */
-    private function canManage(User $user): bool
+    private function canDelete(UserInterface $loggedUser): bool
     {
         return $this->security->isGranted('ROLE_ADMIN');
     }

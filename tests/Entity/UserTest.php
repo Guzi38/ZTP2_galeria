@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * UserTest.
+ */
+
 namespace App\Tests\Entity;
 
 use App\Entity\Enum\UserRole;
@@ -7,8 +11,14 @@ use App\Entity\User;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
-class UserTest extends TestCase
+/**
+ * Class UserTest.
+ */
+final class UserTest extends TestCase
 {
+    /**
+     * Test getters and setters of User entity.
+     */
     public function testGettersAndSetters(): void
     {
         $user = new User();

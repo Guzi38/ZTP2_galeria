@@ -24,17 +24,21 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class UserController extends AbstractController
 {
     /**
+     * Constructor.
+     *
      * @param UserServiceInterface $userService User service
      * @param TranslatorInterface  $translator  Translator
      */
-    public function __construct(
-        private readonly UserServiceInterface $userService,
-        private readonly TranslatorInterface $translator,
-    ) {
+    public function __construct(private readonly UserServiceInterface $userService, private readonly TranslatorInterface $translator)
+    {
     }
 
     /**
      * List users.
+     *
+     * @param Request $request HTTP request
+     *
+     * @return Response HTTP response
      */
     #[Route(name: 'user_index', methods: ['GET'])]
     #[IsGranted('MANAGE')]
@@ -49,6 +53,10 @@ class UserController extends AbstractController
 
     /**
      * Show user.
+     *
+     * @param User $user User entity
+     *
+     * @return Response HTTP response
      */
     #[Route('/{id}', name: 'user_show', requirements: ['id' => '[1-9]\d*'], methods: ['GET'])]
     #[IsGranted('MANAGE')]
@@ -59,9 +67,14 @@ class UserController extends AbstractController
 
     /**
      * Edit profile data (no password here).
+     *
+     * @param Request $request HTTP request
+     * @param User    $user    User entity
+     *
+     * @return Response HTTP response
      */
     #[Route('/{id}/edit', name: 'user_edit', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'PUT'])]
-    // #[IsGranted('USER_EDIT', subject: 'user')]
+    #[IsGranted('EDIT', subject: 'user')]
     public function edit(Request $request, User $user): Response
     {
         $form = $this->createForm(
@@ -90,9 +103,14 @@ class UserController extends AbstractController
 
     /**
      * Change password (separate form and route).
+     *
+     * @param Request $request HTTP request
+     * @param User    $user    User entity
+     *
+     * @return Response HTTP response
      */
     #[Route('/{id}/password', name: 'user_change_password', requirements: ['id' => '[1-9]\d*'], methods: ['GET', 'POST'])]
-    // #[IsGranted('USER_EDIT', subject: 'user')]
+    #[IsGranted('EDIT', subject: 'user')]
     public function changePassword(Request $request, User $user): Response
     {
         $form = $this->createForm(ChangePasswordType::class, null, [

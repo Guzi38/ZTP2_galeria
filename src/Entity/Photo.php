@@ -36,51 +36,11 @@ class Photo
     private ?\DateTimeImmutable $updatedAt = null;
 
     /**
-     * Getter for updatedAt.
-     *
-     * @return \DateTimeImmutable|null UpdatedAt
-     */
-    public function getUpdatedAt(): ?\DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * Setter for updatedAt.
-     *
-     * @param \DateTimeImmutable|null $updatedAt UpdatedAt
-     */
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
      * Created at.
      */
     #[ORM\Column(type: 'datetime_immutable')]
     #[Gedmo\Timestampable(on: 'create')]
     private ?\DateTimeImmutable $createdAt;
-
-    /**
-     * Getter for created at.
-     *
-     * @return \DateTimeImmutable|null Created at
-     */
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Setter for created at.
-     *
-     * @param \DateTimeImmutable|null $createdAt Created at
-     */
-    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
-    {
-        $this->createdAt = $createdAt;
-    }
 
     /**
      * Title.
@@ -105,8 +65,7 @@ class Photo
 
     /**
      * Gallery.
-     *
-     **/
+     */
     #[ORM\ManyToOne(targetEntity: Gallery::class)]
     #[Assert\NotBlank]
     #[ORM\JoinColumn(nullable: false)]
@@ -125,12 +84,14 @@ class Photo
     /**
      * Comments.
      *
-     * @var ArrayCollection
+     * @var ArrayCollection<int, Comment>
      */
     #[ORM\OneToMany(mappedBy: 'photo', targetEntity: Comment::class, fetch: 'EXTRA_LAZY', orphanRemoval: true)]
     private $comments;
 
     /**
+     * Author.
+     *
      * @ORM\ManyToOne(targetEntity=User::class)
      *
      * @ORM\JoinColumn(nullable=false)
@@ -158,23 +119,43 @@ class Photo
     }
 
     /**
-     * Getter for date.
+     * Getter for updatedAt.
      *
-     * @return \DateTimeImmutable|null Date
+     * @return \DateTimeImmutable|null Updated at
      */
-    public function getDate(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->date;
+        return $this->updatedAt;
     }
 
     /**
-     * Setter for date.
+     * Setter for updatedAt.
      *
-     * @param \DateTimeImmutable|null $date Date
+     * @param \DateTimeImmutable|null $updatedAt Updated at
      */
-    public function setDate(?\DateTimeImmutable $date): void
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
     {
-        $this->date = $date;
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * Getter for createdAt.
+     *
+     * @return \DateTimeImmutable|null Created at
+     */
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    /**
+     * Setter for createdAt.
+     *
+     * @param \DateTimeImmutable|null $createdAt Created at
+     */
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): void
+    {
+        $this->createdAt = $createdAt;
     }
 
     /**
@@ -198,7 +179,7 @@ class Photo
     }
 
     /**
-     * Getter for Title.
+     * Getter for title.
      *
      * @return string|null Title
      */
@@ -208,7 +189,7 @@ class Photo
     }
 
     /**
-     * Setter for Title.
+     * Setter for title.
      *
      * @param string $title Title
      */
@@ -270,7 +251,7 @@ class Photo
     }
 
     /**
-     * Getter for comment.
+     * Getter for comments.
      *
      * @return Collection<int, Comment>
      */
@@ -306,7 +287,6 @@ class Photo
     public function removeComment(Comment $comment): self
     {
         if ($this->comments->removeElement($comment)) {
-            // set the owning side to null (unless already changed)
             if ($comment->getPhoto() === $this) {
                 $comment->setPhoto(null);
             }

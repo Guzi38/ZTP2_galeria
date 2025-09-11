@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Tests for UserService.
+ */
+
 namespace App\Tests\Service;
 
 use App\Entity\User;
@@ -9,8 +13,14 @@ use Knp\Component\Pager\PaginatorInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+/**
+ * Class UserServiceTest.
+ */
 class UserServiceTest extends TestCase
 {
+    /**
+     * Test that findOneBy() returns the correct user.
+     */
     public function testFindOneByEmail(): void
     {
         $repo = $this->createMock(UserRepository::class);
@@ -27,6 +37,9 @@ class UserServiceTest extends TestCase
         $this->assertSame($user, $result);
     }
 
+    /**
+     * Test that updateProfile() normalizes the email and saves the user.
+     */
     public function testUpdateProfileNormalizesEmail(): void
     {
         $repo = $this->createMock(UserRepository::class);
@@ -45,6 +58,9 @@ class UserServiceTest extends TestCase
         $this->assertSame('test@example.com', $user->getEmail());
     }
 
+    /**
+     * Test that changePassword() hashes the password and saves the user.
+     */
     public function testChangePasswordHashesAndSaves(): void
     {
         $repo = $this->createMock(UserRepository::class);
