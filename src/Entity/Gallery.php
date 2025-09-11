@@ -147,7 +147,7 @@ class Gallery
      *
      * @param string $slug Slug
      *
-     * @return self
+     * @return self Returns this Gallery entity
      */
     public function setSlug(string $slug): self
     {

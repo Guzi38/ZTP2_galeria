@@ -97,7 +97,7 @@ class Tag
      *
      * @param \DateTimeImmutable $createdAt Created at
      *
-     * @return self
+     * @return self Returns this Tag entity
      */
     public function setCreatedAt(\DateTimeInterface $createdAt): self
     {
@@ -121,7 +121,7 @@ class Tag
      *
      * @param \DateTimeImmutable $updatedAt Updated at
      *
-     * @return self
+     * @return self Returns this Tag entity
      */
     public function setUpdatedAt(\DateTimeInterface $updatedAt): self
     {
@@ -145,7 +145,7 @@ class Tag
      *
      * @param string $title Title
      *
-     * @return self
+     * @return self Returns this Tag entity
      */
     public function setTitle(string $title): self
     {
@@ -169,7 +169,7 @@ class Tag
      *
      * @param string $slug Slug
      *
-     * @return self
+     * @return self Returns this Tag entity
      */
     public function setSlug(string $slug): self
     {
