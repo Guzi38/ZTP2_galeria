@@ -31,7 +31,7 @@ class UserEditType extends AbstractType
             'required' => true,
             'empty_data' => '', // chroni przed null -> string
             'constraints' => [
-                new NotBlank(message: 'Email jest wymagany.'),
+                new NotBlank(message: 'email.required'),
             ],
         ]);
     }

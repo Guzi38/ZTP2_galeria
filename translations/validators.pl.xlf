@@ -10,6 +10,10 @@
         <source>Hasła muszą być identyczne.</source>
         <target>Hasła muszą być identyczne.</target>
       </trans-unit>
+      <trans-unit id="email.required">
+        <source>email.required</source>
+        <target>Email jest wymagany.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
